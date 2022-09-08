@@ -7,7 +7,9 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
 	"github.com/go-resty/resty/v2"
+	"github.com/joho/godotenv"
 	"github.com/rafawilliner/tokenalert_utils-go/src/rest_errors"
 )
 
@@ -27,6 +29,10 @@ type accessToken struct {
 	Id       string `json:"id"`
 	UserId   int64  `json:"user_id"`
 	ClientId int64  `json:"client_id"`
+}
+
+func init() {
+	godotenv.Load(".env")
 }
 
 func IsPublic(request *http.Request) bool {
@@ -90,8 +96,8 @@ func cleanRequest(request *http.Request) {
 	request.Header.Del(headerXCallerId)
 }
 
-func getAccessToken(accessTokenId string) (*accessToken, rest_errors.RestErr){
-	
+func getAccessToken(accessTokenId string) (*accessToken, rest_errors.RestErr) {
+
 	var atResponse *accessToken
 	var respError error
 
@@ -113,7 +119,7 @@ func getAccessToken(accessTokenId string) (*accessToken, rest_errors.RestErr){
 			return nil, rest_errors.NewNotFoundError("invalid restclient response when trying to login user")
 		default:
 			return nil, rest_errors.NewInternalServerError("invalid restclient response when trying to login user", errors.New("restclient error"))
-		}		
+		}
 	}
 
 	return atResponse, nil
