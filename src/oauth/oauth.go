@@ -32,7 +32,7 @@ type accessToken struct {
 }
 
 func init() {
-	godotenv.Load(".env")
+	godotenv.Load(".env")	
 }
 
 func IsPublic(request *http.Request) bool {
@@ -65,6 +65,7 @@ func GetClientId(request *http.Request) int64 {
 }
 
 func AuthenticateRequest(request *http.Request) rest_errors.RestErr {
+	
 	if request == nil {
 		return nil
 	}
