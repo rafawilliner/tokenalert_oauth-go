@@ -16,23 +16,23 @@ const (
 	headerXPublic   = "X-Public"
 	headerXClientId = "X-Client-Id"
 	headerXCallerId = "X-Caller-Id"
-
+	access_token_api_url = "http://localhost:8085"
 	paramAccessToken = "access_token"
 )
 
 var (
-	Client *resty.Client
-	access_token_api_url = "http://localhost:8085"
+	Client               *resty.Client	
 )
 
 type accessToken struct {
-	Id       string `json:"id"`
-	UserId   int64  `json:"user_id"`
-	ClientId int64  `json:"client_id"`
+	AccessToken string `json:"access_token"`
+	UserId      int64  `json:"user_id"`
+	ClientId    int64  `json:"client_id"`
+	Expires     int64  `json:"expires"`
 }
 
 func init() {
-	godotenv.Load(".env")	
+	godotenv.Load(".env")
 }
 
 func IsPublic(request *http.Request) bool {
@@ -65,7 +65,7 @@ func GetClientId(request *http.Request) int64 {
 }
 
 func AuthenticateRequest(request *http.Request) rest_errors.RestErr {
-	
+
 	if request == nil {
 		return nil
 	}
@@ -103,11 +103,12 @@ func getAccessToken(accessTokenId string) (*accessToken, rest_errors.RestErr) {
 	var respError error
 
 	// New client
-	Client := resty.New()	
+	Client := resty.New()
 	response, err := Client.R().
+		SetPathParam("accessTokenId", accessTokenId).
 		SetResult(&atResponse).
 		SetError(&respError).
-		Get(fmt.Sprintf("%s/access_token", access_token_api_url))
+		Get(fmt.Sprintf("%s/access_token/{accessTokenId}", access_token_api_url))
 
 	if err != nil {
 		panic(err)
