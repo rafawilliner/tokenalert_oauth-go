@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 
@@ -23,6 +22,7 @@ const (
 
 var (
 	Client *resty.Client
+	access_token_api_url = "http://localhost:8085"
 )
 
 type accessToken struct {
@@ -102,11 +102,12 @@ func getAccessToken(accessTokenId string) (*accessToken, rest_errors.RestErr) {
 	var atResponse *accessToken
 	var respError error
 
+	// New client
 	Client := resty.New()	
 	response, err := Client.R().
 		SetResult(&atResponse).
 		SetError(&respError).
-		Get(fmt.Sprintf("%s/access_token", os.Getenv("access_token_api_url")))
+		Get(fmt.Sprintf("%s/access_token", access_token_api_url))
 
 	if err != nil {
 		panic(err)
