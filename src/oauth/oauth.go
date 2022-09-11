@@ -102,6 +102,7 @@ func getAccessToken(accessTokenId string) (*accessToken, rest_errors.RestErr) {
 	var atResponse *accessToken
 	var respError error
 
+	Client := resty.New()	
 	response, err := Client.R().
 		SetResult(&atResponse).
 		SetError(&respError).
